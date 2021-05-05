@@ -1,0 +1,26 @@
+; The toplevel library has some common implementations and some byte/native
+; dependant implementations. One way to do that with Dune is simply to use a
+; virtual library with both virtual modules and non-virtual modules.
+
+(library
+ (name ocamltoplevel)
+ (wrapped false)
+ (virtual_modules topeval)
+ (modules :standard \ topstart_byte))
+
+; But we then need to have different executables, one for each implementation
+(executable
+ (name topstart_byte)
+ (modes byte)
+ (libraries ocamltoplevel ocamltoplevel_byte)
+ (modules topstart_byte))
+
+; We would like to have **automatic mode selection**:
+
+;(executable
+; (name topstart)
+; (libraries ocamltoplevel)
+; (modules topstart))
+
+; So that the correct Ocamltoplevel implementation is choosen when building
+; either `toplevel/topstart.exe` or `toplevel/topstart.bc.exe`

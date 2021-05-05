@@ -1,0 +1,8 @@
+; Note that this implementation has different dependencies than the byte
+; implementation and this work as expected with virtual libraries.
+
+(library
+ (name ocamltoplevel_native)
+ (modes native)
+ (libraries lib2)
+ (implements ocamltoplevel))

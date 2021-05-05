@@ -1,0 +1,5 @@
+(library
+ (name ocamltoplevel_byte)
+ (modes byte)
+ (libraries lib1)
+ (implements ocamltoplevel))
