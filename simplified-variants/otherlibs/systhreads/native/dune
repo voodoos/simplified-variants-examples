@@ -1,0 +1,11 @@
+; We need to copuy the stubs
+(copy_files ../st_stubs.c)
+
+(library
+ (name thread_stubs_native)
+ (modes native)
+ (foreign_stubs
+   (language c)
+   (names st_stubs)
+   (flags :standard -DNATIVE_CODE))
+ (implements thread_stubs))

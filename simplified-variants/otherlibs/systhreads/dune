@@ -1,0 +1,49 @@
+; It is possible to pass flags to the C compiler when building stubs:
+
+(executable
+ (name thread)
+  (foreign_stubs
+    (language c)
+    (names st_stubs)
+    (flags :standard -DNATIVE_CODE))
+ (modules :standard \ thread_stubs))
+
+; However there is no mechanism in Dune to pass different flags depending on the
+; build target, and this is required for the Threads library.
+
+; One could use a virtual library and copy the stubs in subdirectories for the
+; byte and native implementations to use different C flags:
+(library
+ (name thread_stubs)
+ (modules thread_stubs)
+ (virtual_modules thread_stubs))
+
+; cat native/dune
+; (copy_files ../st_stubs.c)
+;
+; (library
+;  (name thread_stubs_native)
+;  (modes native)
+;  (foreign_stubs
+;    (language c)
+;    (names st_stubs)
+;    (flags :standard -DNATIVE_CODE))
+;  (implements thread_stubs))
+
+
+; This is a bit heavyweighted when only flags differ. And we would still need a
+; mechanism to select between these two implementations automatically
+
+; In this case it feels like we should not use virtual libraries at all but
+; introduce a more flexible way to define flags. Maybe a "long form" for the
+; field `flags` that could be similar to the select stanza:
+;       (<target> -> <flags>) :
+
+; (executable
+;  (name thread)
+;   (foreign_stubs
+;     (language c)
+;     (names st_stubs)
+;     (flags
+;      (native -> :standard -DNATIVE_CODE))
+;  (modules :standard \ thread_stubs))
